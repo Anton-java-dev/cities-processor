@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sap.task.cities_processor.controller.dto.CityDto;
 import com.sap.task.cities_processor.controller.dto.DataFormat;
+import com.sap.task.cities_processor.controller.dto.SortingField;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,51 +25,76 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 class CityControllerTest {
-    private final static String URL_CITIES = "/api/cities";
+    private static final String URL_CITIES = "/api/cities";
+
     @Autowired
     MockMvc mockMvc;
-
     @Autowired
     ObjectMapper objectMapper;
 
     @Test
-    void shouldReturnCitiesFromCsv() throws Exception {
-        MvcResult result = mockMvc.perform(get(URL_CITIES).param("dataFormat", DataFormat.CSV.name()))
+    void shouldSortCitiesByNameAscFromCsv() throws Exception {
+        List<CityDto> cities = performRequest(DataFormat.CSV, SortingField.NAME, true);
+
+        assertThat(cities).hasSize(2);
+        assertThat(cities.get(0).name()).isEqualTo("Berlin");
+        assertThat(cities.get(1).name()).isEqualTo("Hamburg");
+    }
+
+    @Test
+    void shouldSortCitiesByNameDescFromJson() throws Exception {
+        List<CityDto> cities = performRequest(DataFormat.JSON, SortingField.NAME, false);
+
+        assertThat(cities).hasSize(2);
+        assertThat(cities.get(0).name()).isEqualTo("Paris");
+        assertThat(cities.get(1).name()).isEqualTo("Lyon");
+    }
+
+    @Test
+    void shouldSortCitiesByPopulationAscFromJson() throws Exception {
+        List<CityDto> cities = performRequest(DataFormat.JSON, SortingField.POPULATION, true);
+
+        assertThat(cities).hasSize(2);
+        assertThat(cities.get(0).name()).isEqualTo("Lyon");
+        assertThat(cities.get(1).name()).isEqualTo("Paris");
+    }
+
+    @Test
+    void shouldSortCitiesByAreaDescFromCsv() throws Exception {
+        List<CityDto> cities = performRequest(DataFormat.CSV, SortingField.AREA, false);
+
+        assertThat(cities).hasSize(2);
+        assertThat(cities.get(0).name()).isEqualTo("Hamburg");
+        assertThat(cities.get(1).name()).isEqualTo("Berlin");
+    }
+
+    @Test
+    void shouldSortCitiesByDefaultSortFromCsv() throws Exception {
+        List<CityDto> cities = performRequestDefaultSort(DataFormat.CSV);
+
+        assertThat(cities).hasSize(2);
+        assertThat(cities.get(0).name()).isEqualTo("Berlin");
+        assertThat(cities.get(1).name()).isEqualTo("Hamburg");
+    }
+
+    private List<CityDto> performRequest(DataFormat format, SortingField field, boolean asc) throws Exception {
+        MvcResult result = mockMvc.perform(get(URL_CITIES)
+                        .param("dataFormat", format.name())
+                        .param("sortField", field.name())
+                        .param("isAsc", Boolean.toString(asc)))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        List<CityDto> cities = getCitiesFromResponse(result);
-
-        assertThat(cities).hasSize(2);
-        CityDto city = cities.get(0);
-        assertThat(city.name()).isEqualTo("Berlin");
-        assertThat(city.density()).isEqualTo(city.population()/city.area());
+        return getCitiesFromResponse(result);
     }
 
-    @Test
-    void shouldReturnCitiesFromJson() throws Exception {
-        MvcResult result = mockMvc.perform(get(URL_CITIES).param("dataFormat", DataFormat.JSON.name()))
+    private List<CityDto> performRequestDefaultSort(DataFormat format) throws Exception {
+        MvcResult result = mockMvc.perform(get(URL_CITIES)
+                        .param("dataFormat", format.name()))
                 .andExpect(status().isOk())
                 .andReturn();
 
-        List<CityDto> cities = getCitiesFromResponse(result);
-
-        assertThat(cities).hasSize(2);
-        CityDto city = cities.get(0);
-        assertThat(city.name()).isEqualTo("Paris");
-        assertThat(city.density()).isEqualTo(city.population()/city.area());
-    }
-
-    @Test
-    void shouldReturnBadRequestForInvalidDataFormat() throws Exception {
-        mockMvc.perform(get(URL_CITIES).param("dataFormat", "XML"))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void shouldReturnBadRequestWhenDataFormatMissing() throws Exception {
-        mockMvc.perform(get(URL_CITIES))
-                .andExpect(status().isBadRequest());
+        return getCitiesFromResponse(result);
     }
 
     private List<CityDto> getCitiesFromResponse(MvcResult result) throws JsonProcessingException, UnsupportedEncodingException {

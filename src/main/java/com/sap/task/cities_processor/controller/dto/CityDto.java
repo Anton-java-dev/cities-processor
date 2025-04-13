@@ -9,6 +9,6 @@ public record CityDto(
         double density
 ) {
     public CityDto(City city) {
-        this(city.name(), city.population(), city.area(), city.population()/ city.area());
+        this(city.name(), city.population(), city.area(), city.population() / city.area());
     }
 }

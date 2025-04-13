@@ -20,7 +20,7 @@ import java.util.Optional;
 @Slf4j
 @Service("csvCityLoader")
 @RequiredArgsConstructor
-public class CsvCityLoader implements CityDataLoader {
+public class CsvCityLoaderImpl implements CityDataLoader {
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_POPULATION = "population";
     private static final String COLUMN_AREA = "area";
@@ -47,7 +47,6 @@ public class CsvCityLoader implements CityDataLoader {
                         .filter(City::isValid)
                         .ifPresent(cities::add);
             }
-
             return cities;
 
         } catch (Exception e) {

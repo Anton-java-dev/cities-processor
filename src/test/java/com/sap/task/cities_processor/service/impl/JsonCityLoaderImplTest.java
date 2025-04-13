@@ -14,29 +14,29 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-class CsvCityLoaderTest {
-    private static final String INVALID_CSV_FILE_PATH = "data/invalid/cities.csv";
-    private static final String VALID_CSV_FILE_PATH = "data/valid/cities.csv";
+class JsonCityLoaderImplTest {
+    private static final String INVALID_JSON_FILE_PATH = "data/invalid/cities.json";
+    private static final String VALID_JSON_FILE_PATH = "data/valid/cities.json";
 
     @Autowired
-    @Qualifier("csvCityLoader")
-    CityDataLoader csvCityLoader;
+    @Qualifier("jsonCityLoader")
+    CityDataLoader jsonCityLoader;
 
     @Test
-    void shouldLoadCitiesFromCsv() {
-        List<City> cities = csvCityLoader.loadCities(VALID_CSV_FILE_PATH);
+    void shouldLoadCitiesFromJson() {
+        List<City> cities = jsonCityLoader.loadCities(VALID_JSON_FILE_PATH);
 
         assertEquals(2, cities.size());
 
-        City berlin = cities.get(0);
-        assertEquals("Berlin", berlin.name());
-        assertEquals(3769000, berlin.population());
-        assertEquals(891.8, berlin.area());
+        City paris = cities.get(0);
+        assertEquals("Paris", paris.name());
+        assertEquals(2148000, paris.population());
+        assertEquals(105.4, paris.area());
     }
 
     @Test
-    void shouldFilterOutAllInvalidCsvDataLeavingOne() {
-        List<City> cities = csvCityLoader.loadCities(INVALID_CSV_FILE_PATH);
+    void shouldFilterOutAllInvalidJsonDataLeavingOne() {
+        List<City> cities = jsonCityLoader.loadCities(INVALID_JSON_FILE_PATH);
 
         assertEquals(1, cities.size());
         City remaining = cities.get(0);
@@ -45,4 +45,3 @@ class CsvCityLoaderTest {
         assertEquals(10.0, remaining.area());
     }
 }
-

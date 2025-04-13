@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @Service("jsonCityLoader")
 @RequiredArgsConstructor
-public class JsonCityLoader implements CityDataLoader {
+public class JsonCityLoaderImpl implements CityDataLoader {
     private final ObjectMapper objectMapper;
 
     @Override

@@ -22,24 +22,42 @@ A Spring Boot application to process city data (population, area) from provided 
 Get cities data
 
 #### `GET /api/cities`
-- **Description**: Get city data from specified file format
-- **Parameters**:
-   - `dataFormat` (required): `CSV` or `JSON`
-- **Example**:
-  ```bash
-  curl "http://localhost:8080/api/cities?dataFormat=JSON"
+- **Description**: Get city data from a specified file format with optional sorting.
+- **Query Parameters**:
+    - `dataFormat` (required): `CSV` or `JSON`
+    - `sortField` (optional default: NAME): one of the following:
+        - `NAME`
+        - `POPULATION`
+        - `AREA`
+    - `isAsc` (optional default:true): `true` for ascending, `false` for descending
+
+- **Examples**:
+
+Get cities from JSON file:
+
+curl "http://localhost:8080/api/cities?dataFormat=JSON"
+
+Sort cities by population in descending order:
+
+curl "http://localhost:8080/api/cities?dataFormat=CSV&sortField=POPULATION&isAsc=false"
+
 - **Response Examples**:
 
-`200 OK`:
-
+`200 OK`
 ```json
 [
-  {
-    "name": "Berlin",
-    "population": 1000,
-    "area": 10.0,
-    "density": 100.0
-  }
+{
+"name": "Berlin",
+"population": 1000,
+"area": 10.0,
+"density": 100.0
+},
+{
+"name": "Hamburg",
+"population": 800,
+"area": 8.0,
+"density": 100.0
+}
 ]
 ```
 `400 Bad Request`:
