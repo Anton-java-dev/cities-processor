@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Berlin",
+    "population": 3769000,
+    "area": -3
+  },
+  {
+    "name": "Hamburg",
+    "population": -5,
+    "area": 755.2
+  },
+  {
+    "name": "",
+    "population": 1,
+    "area": 1
+  },
+  {
+    "name": "valid",
+    "population": 1000,
+    "area": 10
+  }
+]
