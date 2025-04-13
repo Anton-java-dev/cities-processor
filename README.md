@@ -31,12 +31,14 @@ Get cities data
 - **Response Examples**:
 
 `200 OK`:
+
 ```json
 [
   {
     "name": "Berlin",
-    "population": 3769000,
-    "area": 891.7
+    "population": 1000,
+    "area": 10.0,
+    "density": 100.0
   }
 ]
 ```
