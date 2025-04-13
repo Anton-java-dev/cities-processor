@@ -126,4 +126,19 @@ class CityServiceImplTest {
         assertThat(result).isEmpty();
     }
 
+    @Test
+    void shouldReturnCitiesWithAddedOnesInRuntime() {
+        when(csvCityLoader.loadCities(anyString())).thenReturn(mockCities);
+        String cityName = "new";
+        City city = new City(cityName, 1, 1);
+
+        List<CityDto> result = cityService.getCities(DataFormat.CSV, SortingField.NAME, true, "");
+
+        assertThat(result).hasSize(3);
+        cityService.addCity(city);
+
+        result = cityService.getCities(DataFormat.CSV, SortingField.NAME, true, "");
+        assertThat(result).hasSize(4);
+        assertThat(result).anyMatch(x -> cityName.equals(x.name()));
+    }
 }

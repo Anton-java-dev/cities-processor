@@ -32,7 +32,7 @@ Get cities data
     - `isAsc` (optional default:true): `true` for ascending, `false` for descending
     - `nameContains` (optional): filter cities that contain the given substring in their name (case-insensitive)
 
-- **Examples**:
+- **Request Examples**:
 
 Get cities from JSON file:
 
@@ -46,7 +46,7 @@ Filter cities that contain "ham" in the name
 
 curl "http://localhost:8080/api/cities?dataFormat=CSV&nameContains=ham"
 
-- **Response Examples**:
+- **Responses**:
 
 `200 OK`
 ```json
@@ -66,5 +66,37 @@ curl "http://localhost:8080/api/cities?dataFormat=CSV&nameContains=ham"
 ]
 ```
 `400 Bad Request`:
-```json
+```
 Data loading failed: JSON file not found at path: data/citis.json
+```
+
+#### `POST /api/cities`
+
+- **Description**: Add a new city at runtime
+- **Request Body** (JSON):
+```json
+{
+  "name": "Munich",
+  "population": 1000,
+  "area": 12.3
+}
+```
+- **Validation**
+
+name: non-empty string
+
+population: positive integer
+
+area: positive double
+
+- **Request Examples**:
+
+curl -X POST "http://localhost:8080/api/cities" \
+-H "Content-Type: application/json" \
+-d '{"name":"Tokyo","population":13960000,"area":2194.0}'
+
+- **Responses**:
+
+`200 OK` - Successfully added city
+
+`400 BAD REQUEST` - Validation failure
