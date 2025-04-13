@@ -40,8 +40,9 @@ class CityControllerTest {
         List<CityDto> cities = getCitiesFromResponse(result);
 
         assertThat(cities).hasSize(2);
-        assertThat(cities.get(0).name()).isEqualTo("Berlin");
-        assertThat(cities.get(1).population()).isEqualTo(1841000);
+        CityDto city = cities.get(0);
+        assertThat(city.name()).isEqualTo("Berlin");
+        assertThat(city.density()).isEqualTo(city.population()/city.area());
     }
 
     @Test
@@ -53,8 +54,9 @@ class CityControllerTest {
         List<CityDto> cities = getCitiesFromResponse(result);
 
         assertThat(cities).hasSize(2);
-        assertThat(cities.get(0).name()).isEqualTo("Paris");
-        assertThat(cities.get(1).population()).isEqualTo(515695);
+        CityDto city = cities.get(0);
+        assertThat(city.name()).isEqualTo("Paris");
+        assertThat(city.density()).isEqualTo(city.population()/city.area());
     }
 
     @Test

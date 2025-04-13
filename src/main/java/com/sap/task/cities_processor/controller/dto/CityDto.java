@@ -5,9 +5,10 @@ import com.sap.task.cities_processor.model.City;
 public record CityDto(
         String name,
         int population,
-        double area
+        double area,
+        double density
 ) {
     public CityDto(City city) {
-        this(city.name(), city.population(), city.area());
+        this(city.name(), city.population(), city.area(), city.population()/ city.area());
     }
 }
