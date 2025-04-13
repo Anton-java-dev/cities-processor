@@ -35,12 +35,20 @@ public class CityServiceImpl implements CityService {
         this.jsonFilePath = jsonFilePath;
     }
 
-    public List<CityDto> getCities(DataFormat dataFormat, SortingField sortBy, boolean isAsc) {
+    public List<CityDto> getCities(DataFormat dataFormat, SortingField sortBy, boolean isAsc, String nameContains) {
         List<City> cities = loadCities(dataFormat);
         return cities.stream()
+                .filter(city -> cityNameContainsFilter(city.name(), nameContains))
                 .sorted(createComparator(sortBy, isAsc))
                 .map(CityDto::new)
                 .toList();
+    }
+
+    private boolean cityNameContainsFilter(String cityName, String nameContains) {
+        if (nameContains == null || nameContains.isBlank()) {
+            return true;
+        }
+        return cityName != null && cityName.toLowerCase().contains(nameContains.toLowerCase());
     }
 
     private List<City> loadCities(DataFormat dataFormat) {
