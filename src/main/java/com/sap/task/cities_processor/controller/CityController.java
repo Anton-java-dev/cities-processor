@@ -5,6 +5,7 @@ import com.sap.task.cities_processor.controller.dto.CityDto;
 import com.sap.task.cities_processor.controller.dto.DataFormat;
 import com.sap.task.cities_processor.controller.dto.SortingField;
 import com.sap.task.cities_processor.exception.CityDataLoadException;
+import com.sap.task.cities_processor.model.City;
 import com.sap.task.cities_processor.service.CityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class CityController {
-    private final CityService cityServiceImpl;
+    private final CityService cityService;
 
     @GetMapping("/cities")
     public ResponseEntity<List<CityDto>> getCities(
@@ -24,8 +25,20 @@ public class CityController {
             @RequestParam(required = false, defaultValue = "NAME") SortingField sortBy,
             @RequestParam(required = false, defaultValue = "true") boolean isAsc,
             @RequestParam(required = false) String nameContains) {
-        return ResponseEntity.ok(cityServiceImpl.getCities(dataFormat, sortBy, isAsc, nameContains));
+        return ResponseEntity.ok(cityService.getCities(dataFormat, sortBy, isAsc, nameContains));
     }
+
+    @PostMapping("/cities")
+    public ResponseEntity<Void> addCity(@RequestBody CityDto cityDto) {
+        City newCity = new City(cityDto);
+        if (!newCity.isValid()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        cityService.addCity(newCity);
+        return ResponseEntity.ok().build();
+    }
+
 
     @ExceptionHandler(CityDataLoadException.class)
     public ResponseEntity<String> handleCityDataLoadException(CityDataLoadException ex) {

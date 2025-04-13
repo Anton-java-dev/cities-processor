@@ -11,8 +11,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -22,6 +25,7 @@ public class CityServiceImpl implements CityService {
     public final CityDataLoader jsonCityLoader;
     private final String csvFilePath;
     private final String jsonFilePath;
+    private final List<City> addedCities = new CopyOnWriteArrayList<>();
 
     public CityServiceImpl(
             @Qualifier("csvCityLoader") CityDataLoader csvCityLoader,
@@ -37,11 +41,18 @@ public class CityServiceImpl implements CityService {
 
     public List<CityDto> getCities(DataFormat dataFormat, SortingField sortBy, boolean isAsc, String nameContains) {
         List<City> cities = loadCities(dataFormat);
-        return cities.stream()
+        return Stream.of(cities, addedCities)
+                .flatMap(Collection::stream)
                 .filter(city -> cityNameContainsFilter(city.name(), nameContains))
                 .sorted(createComparator(sortBy, isAsc))
                 .map(CityDto::new)
                 .toList();
+    }
+
+    @Override
+    public void addCity(City city) {
+        log.info("Added city {}", city.name());
+        addedCities.add(city);
     }
 
     private boolean cityNameContainsFilter(String cityName, String nameContains) {
