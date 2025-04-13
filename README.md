@@ -30,6 +30,7 @@ Get cities data
         - `POPULATION`
         - `AREA`
     - `isAsc` (optional default:true): `true` for ascending, `false` for descending
+    - `nameContains` (optional): filter cities that contain the given substring in their name (case-insensitive)
 
 - **Examples**:
 
@@ -40,6 +41,10 @@ curl "http://localhost:8080/api/cities?dataFormat=JSON"
 Sort cities by population in descending order:
 
 curl "http://localhost:8080/api/cities?dataFormat=CSV&sortField=POPULATION&isAsc=false"
+
+Filter cities that contain "ham" in the name
+
+curl "http://localhost:8080/api/cities?dataFormat=CSV&nameContains=ham"
 
 - **Response Examples**:
 

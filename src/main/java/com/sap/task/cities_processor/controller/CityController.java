@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -23,8 +22,9 @@ public class CityController {
     public ResponseEntity<List<CityDto>> getCities(
             @RequestParam DataFormat dataFormat,
             @RequestParam(required = false, defaultValue = "NAME") SortingField sortBy,
-            @RequestParam(required = false, defaultValue = "true") boolean isAsc) {
-        return ResponseEntity.ok(cityServiceImpl.getCities(dataFormat, sortBy, isAsc));
+            @RequestParam(required = false, defaultValue = "true") boolean isAsc,
+            @RequestParam(required = false) String nameContains) {
+        return ResponseEntity.ok(cityServiceImpl.getCities(dataFormat, sortBy, isAsc, nameContains));
     }
 
     @ExceptionHandler(CityDataLoadException.class)

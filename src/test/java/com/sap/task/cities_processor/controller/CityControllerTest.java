@@ -34,7 +34,7 @@ class CityControllerTest {
 
     @Test
     void shouldSortCitiesByNameAscFromCsv() throws Exception {
-        List<CityDto> cities = performRequest(DataFormat.CSV, SortingField.NAME, true);
+        List<CityDto> cities = performSortRequest(DataFormat.CSV, SortingField.NAME, true);
 
         assertThat(cities).hasSize(2);
         assertThat(cities.get(0).name()).isEqualTo("Berlin");
@@ -43,7 +43,7 @@ class CityControllerTest {
 
     @Test
     void shouldSortCitiesByNameDescFromJson() throws Exception {
-        List<CityDto> cities = performRequest(DataFormat.JSON, SortingField.NAME, false);
+        List<CityDto> cities = performSortRequest(DataFormat.JSON, SortingField.NAME, false);
 
         assertThat(cities).hasSize(2);
         assertThat(cities.get(0).name()).isEqualTo("Paris");
@@ -52,7 +52,7 @@ class CityControllerTest {
 
     @Test
     void shouldSortCitiesByPopulationAscFromJson() throws Exception {
-        List<CityDto> cities = performRequest(DataFormat.JSON, SortingField.POPULATION, true);
+        List<CityDto> cities = performSortRequest(DataFormat.JSON, SortingField.POPULATION, true);
 
         assertThat(cities).hasSize(2);
         assertThat(cities.get(0).name()).isEqualTo("Lyon");
@@ -61,7 +61,7 @@ class CityControllerTest {
 
     @Test
     void shouldSortCitiesByAreaDescFromCsv() throws Exception {
-        List<CityDto> cities = performRequest(DataFormat.CSV, SortingField.AREA, false);
+        List<CityDto> cities = performSortRequest(DataFormat.CSV, SortingField.AREA, false);
 
         assertThat(cities).hasSize(2);
         assertThat(cities.get(0).name()).isEqualTo("Hamburg");
@@ -77,7 +77,23 @@ class CityControllerTest {
         assertThat(cities.get(1).name()).isEqualTo("Hamburg");
     }
 
-    private List<CityDto> performRequest(DataFormat format, SortingField field, boolean asc) throws Exception {
+    @Test
+    void shouldReturnCityWithNameContainingSubstringFromCsv() throws Exception {
+        List<CityDto> cities = performContainsFilterRequest(DataFormat.CSV, "ham");
+
+        assertThat(cities).hasSize(1);
+        assertThat(cities.get(0).name()).isEqualTo("Hamburg");
+    }
+
+    @Test
+    void shouldReturnCityWithNameContainingSubstringFromJson() throws Exception {
+        List<CityDto> cities = performContainsFilterRequest(DataFormat.JSON, "yon");
+
+        assertThat(cities).hasSize(1);
+        assertThat(cities.get(0).name()).isEqualTo("Lyon");
+    }
+
+    private List<CityDto> performSortRequest(DataFormat format, SortingField field, boolean asc) throws Exception {
         MvcResult result = mockMvc.perform(get(URL_CITIES)
                         .param("dataFormat", format.name())
                         .param("sortField", field.name())
@@ -87,6 +103,17 @@ class CityControllerTest {
 
         return getCitiesFromResponse(result);
     }
+
+    private List<CityDto> performContainsFilterRequest(DataFormat format, String nameContains) throws Exception {
+        MvcResult result = mockMvc.perform(get(URL_CITIES)
+                        .param("dataFormat", format.name())
+                        .param("nameContains", nameContains))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        return getCitiesFromResponse(result);
+    }
+
 
     private List<CityDto> performRequestDefaultSort(DataFormat format) throws Exception {
         MvcResult result = mockMvc.perform(get(URL_CITIES)

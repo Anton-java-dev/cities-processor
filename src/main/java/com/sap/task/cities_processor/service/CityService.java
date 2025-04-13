@@ -14,11 +14,12 @@ public interface CityService {
     /**
      * Retrieves a list of cities from the specified data format and returns them sorted by the given field and direction.
      *
-     * @param dataFormat the format of the data source (e.g., CSV, JSON)
-     * @param sortBy     the field to sort the cities by (e.g., NAME, POPULATION, AREA)
-     * @param isAsc      true for ascending order, false for descending
+     * @param dataFormat   the format of the data source (e.g., CSV, JSON)
+     * @param sortBy       the field to sort the cities by (e.g., NAME, POPULATION, AREA)
+     * @param isAsc        true for ascending order, false for descending
+     * @param nameContains optional substring to filter city names
      * @return a list of {@link CityDto} objects representing the city data
      */
-    List<CityDto> getCities(DataFormat dataFormat, SortingField sortBy, boolean isAsc);
+    List<CityDto> getCities(DataFormat dataFormat, SortingField sortBy, boolean isAsc, String nameContains);
 }
 
