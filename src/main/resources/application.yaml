@@ -1,0 +1,3 @@
+path:
+  csv: data/cities.csv
+  json: data/cities.json

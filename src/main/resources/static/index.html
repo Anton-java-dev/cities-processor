@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>City Table</title>
+    <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .highlight {
+        background-color: #e6ffe6;
+        font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h2>City List</h2>
+<table id="cityTable">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Population</th>
+        <th>Area (sq mi)</th>
+        <th>Density (per sq km)</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+    async function fetchCities() {
+      try {
+        const response = await fetch('http://localhost:8080/api/cities?dataFormat=CSV');
+        const cities = await response.json();
+        const tableBody = document.querySelector('#cityTable tbody');
+
+        cities.forEach(city => {
+          const row = document.createElement('tr');
+
+          if (city.population > 1000000) {
+            row.classList.add('highlight');
+          }
+
+          row.innerHTML = `
+            <td>${city.name}</td>
+            <td>${city.population}</td>
+            <td>${city.area}</td>
+            <td>${city.density.toFixed(2)}</td>
+          `;
+          tableBody.appendChild(row);
+        });
+      } catch (error) {
+        console.error('Failed to fetch cities:', error);
+      }
+    }
+
+    fetchCities();
+  </script>
+
+</body>
+</html>
