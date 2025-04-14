@@ -109,6 +109,8 @@ Population
 Area (sq mi)
 Density (people per sq km)
 
+Cities with a population greater than 1 million are highlighted to make them stand out visually.
+
 ### How to use it:
 The UI fetches data from the backend /api/cities?dataFormat=CSV endpoint.
 
