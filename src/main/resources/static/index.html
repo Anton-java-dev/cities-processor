@@ -19,6 +19,11 @@
     th {
       background-color: #f2f2f2;
     }
+
+    .highlight {
+        background-color: #e6ffe6;
+        font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -45,6 +50,11 @@
 
         cities.forEach(city => {
           const row = document.createElement('tr');
+
+          if (city.population > 1000000) {
+            row.classList.add('highlight');
+          }
+
           row.innerHTML = `
             <td>${city.name}</td>
             <td>${city.population}</td>
