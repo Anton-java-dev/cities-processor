@@ -100,3 +100,18 @@ curl -X POST "http://localhost:8080/api/cities" \
 `200 OK` - Successfully added city
 
 `400 BAD REQUEST` - Validation failure
+
+## User Interface
+A basic web UI is included that displays all cities in a table with the following columns:
+
+Name
+Population
+Area (sq mi)
+Density (people per sq km)
+
+### How to use it:
+The UI fetches data from the backend /api/cities?dataFormat=CSV endpoint.
+
+You can view the UI by:
+
+Running the Spring Boot app and navigating to http://localhost:8080/index.html in your browser.
